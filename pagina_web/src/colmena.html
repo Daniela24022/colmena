@@ -1,0 +1,740 @@
+<title>Colmena Campaign</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Colmena: a team of AI agents that takes care of your everyday life. Just say it.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: crowdfunding campaign page — title, video + funding panel, tabs, then story (left index · center story · right rewards). */
+:root{
+  --bg:#FBF7F0; --surface:#FFFFFF; --sunk:#F3ECDF; --ink:#3A332A; --muted:#75695A; --line:#E6DCCB;
+  --amber:#E09200; --amber-deep:#B87500; --honey:#F6C453; --teal:#2F6B6B; --teal-text:#2F6B6B;
+  --on-amber:#1F1C17; --stage:#1F1C17; --stage-ink:#FBF7F0;
+  --serif:"Lora", Georgia, "Times New Roman", serif;
+  --sans:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --wrap:1180px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1F1C17; --surface:#28241E; --sunk:#2F2A23; --ink:#F1EADF; --muted:#B4A792; --line:#3D362C;
+  --amber-deep:#F6C453; --teal-text:#7BB8B8; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1F1C17; --surface:#28241E; --sunk:#2F2A23; --ink:#F1EADF; --muted:#B4A792; --line:#3D362C;
+  --amber-deep:#F6C453; --teal-text:#7BB8B8; color-scheme:dark;}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--surface)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:4px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--serif);text-wrap:balance;line-height:1.2;margin:0}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--amber-deep)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:6px;font:600 16px/1 var(--sans);padding:16px 22px;cursor:pointer;text-decoration:none}
+.btn-primary{background:var(--amber);color:var(--on-amber)}
+.btn-primary:hover{filter:brightness(1.07)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--muted)}
+
+/* top bar */
+.topbar{background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--serif);font-weight:700;font-size:22px}
+.brand svg{width:30px;height:28px}
+.topbar .note{font-size:13px;color:var(--muted);text-align:right}
+
+/* header */
+.head{padding-block:36px 24px;text-align:center}
+.head h1{font-size:clamp(28px,4.2vw,40px)}
+.head p{max-width:720px;margin:12px auto 0;color:var(--muted);font-size:18px}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.9fr) minmax(0,1fr);gap:40px;align-items:start}
+.media{position:relative;aspect-ratio:16/9;max-width:100%;background:var(--stage);border-radius:4px;overflow:hidden;color:var(--stage-ink)}
+.media .poster{position:absolute;inset:0;display:grid;place-items:center;text-align:center;cursor:pointer;border:0;background:transparent;color:inherit;width:100%;font:inherit}
+.media canvas{position:absolute;inset:0;width:100%;height:100%}
+.poster-inner{position:relative;display:grid;gap:10px;justify-items:center;padding:16px}
+.poster-inner .logo svg{width:64px;height:59px}
+.poster-inner .word{font:700 clamp(30px,5vw,52px)/1 var(--serif)}
+.poster-inner .tag{color:var(--honey);font-size:clamp(14px,1.8vw,19px)}
+.play{margin-top:10px;width:76px;height:52px;border-radius:8px;background:var(--amber);display:grid;place-items:center;transition:transform .2s}
+.poster:hover .play{transform:scale(1.06)}
+.play svg{width:22px;height:22px}
+.media video,.media iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#000}
+.media .msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:24px;background:var(--stage)}
+.media .msg a{color:var(--honey)}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:14px;font-size:14px;color:var(--muted)}
+.meta-row span{display:inline-flex;align-items:center;gap:6px}
+.meta-row svg{width:15px;height:15px}
+.badge{color:var(--teal-text);font-weight:600}
+
+.fund{display:grid;gap:18px}
+.bar{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--amber);border-radius:3px}
+.stat b{display:block;font:600 30px/1.1 var(--sans);font-variant-numeric:tabular-nums}
+.stat.lead b{color:var(--amber-deep)}
+.stat span{color:var(--muted);font-size:15px}
+.fund .actions{display:grid;gap:10px}
+.fund .small{font-size:13px;color:var(--muted);margin:0}
+.fund .small u{text-underline-offset:2px}
+
+/* how it works strip */
+.trust{margin-top:44px;background:var(--sunk);border-block:1px solid var(--line)}
+.trust .wrap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;padding-block:22px}
+.trust div{display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.trust svg{flex:none;width:28px;height:26px}
+
+/* tabs */
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--line)}
+.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+.tabs a{flex:none;padding:16px 14px;text-decoration:none;font-weight:600;font-size:15px;color:var(--muted);border-bottom:3px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a.on{color:var(--ink);border-bottom-color:var(--amber)}
+.tabs .cta{margin-left:auto;align-self:center;padding:10px 16px;font-size:14px}
+
+/* campaign grid */
+.campaign{display:grid;grid-template-columns:190px minmax(0,1fr) 330px;gap:44px;padding-block:44px 64px;align-items:start}
+.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);display:grid;gap:2px;font-size:14px}
+.toc .eyebrow{margin-bottom:8px}
+.toc a{text-decoration:none;color:var(--muted);padding:6px 10px;border-left:2px solid var(--line)}
+.toc a:hover{color:var(--ink)}
+.toc a.on{color:var(--ink);font-weight:600;border-left-color:var(--amber)}
+
+.story{min-width:0;display:grid;gap:64px}
+.story section{scroll-margin-top:90px;display:grid;gap:18px}
+.story h2{font-size:clamp(26px,3vw,34px)}
+.story h3{font-size:21px}
+.story p{margin:0;max-width:66ch}
+.lede{font-size:19px}
+.muted{color:var(--muted)}
+.cite{font-size:13px;color:var(--muted)}
+
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.step{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:6px;align-content:start}
+.step b{font-family:var(--serif);font-size:20px}
+.step .who{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.step.apps .who{color:var(--muted)}
+.step.us .who{color:var(--teal-text)}
+.step.you{border-color:var(--amber)}
+.step.you .who{color:var(--amber-deep)}
+.step p{font-size:15px}
+
+.quote{font:500 italic clamp(22px,2.6vw,28px)/1.35 var(--serif);border-left:3px solid var(--amber);padding-left:18px;margin:0;max-width:30ch}
+
+.phones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.phones figure{margin:0;display:grid;gap:10px}
+.phones img{width:100%;border-radius:22px;border:6px solid var(--stage);background:var(--stage);display:block}
+.phones figcaption{font-size:14px;color:var(--muted)}
+
+.wide{width:100%;border-radius:8px;border:1px solid var(--line);display:block}
+
+.agents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.agent{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:start;padding:14px;border-radius:8px;background:var(--surface);border:1px solid var(--line)}
+.hex{width:44px;height:50px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:var(--teal);display:grid;place-items:center;color:#fff}
+.hex svg{width:20px;height:20px}
+.hex.queen{background:var(--amber);color:var(--on-amber)}
+.agent b{display:block}
+.agent span{font-size:14px;color:var(--muted)}
+.agent.more{border-style:dashed;background:transparent}
+.agent.more .hex{background:transparent;border:0;color:var(--teal-text);outline:2px dashed var(--teal-text);outline-offset:-6px}
+
+.day{display:grid;gap:0;border-left:2px solid var(--line);margin-left:8px}
+.day .t{position:relative;padding:0 0 22px 26px;display:grid;gap:4px}
+.day .t::before{content:"";position:absolute;left:-8px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--amber)}
+.day .t:last-child{padding-bottom:0}
+.day .t:last-child::before{background:var(--amber)}
+.day time{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums;color:var(--amber-deep)}
+.day .bubble{background:var(--surface);border:1px solid var(--line);border-radius:4px 14px 14px 14px;padding:12px 16px;max-width:52ch}
+
+.rule{background:var(--stage);color:var(--stage-ink);border-radius:10px;padding:28px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:20px;align-items:center}
+.rule svg{width:48px;height:48px;color:var(--honey)}
+.rule h3{color:var(--stage-ink);font-size:24px}
+.rule p{color:#D9CFBF;margin-top:6px}
+
+.why{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.why div{padding:18px;border-radius:8px;background:var(--sunk);display:grid;gap:6px;align-content:start}
+.why b{font-family:var(--serif);font-size:19px}
+.why p{font-size:15px}
+
+.compare{overflow-x:auto;border:1px solid var(--line);border-radius:8px}
+.compare table{border-collapse:collapse;width:100%;min-width:520px;font-size:15px}
+.compare th,.compare td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.compare tr:last-child td{border-bottom:0}
+.compare thead th{background:var(--sunk);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.compare td:first-child{font-weight:600}
+.compare .yes{color:var(--teal-text);font-weight:600}
+
+.coord{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;counter-reset:c}
+.coord div{border-top:3px solid var(--teal);padding-top:12px;display:grid;gap:4px}
+.coord b{font-family:var(--serif);font-size:19px}
+.coord p{font-size:15px}
+
+.hype{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;overflow-x:auto}
+.hype svg{display:block;width:100%;min-width:520px;height:auto}
+.hype .curve{fill:none;stroke:var(--muted);stroke-width:2.5}
+.hype .axis{stroke:var(--line);stroke-width:1.5}
+.hype text{font-family:var(--sans);font-size:11px;fill:var(--muted)}
+.hype .lab{font-size:12px;font-weight:600;fill:var(--ink)}
+.hype .dot-a{fill:var(--amber)}
+.hype .dot-t{fill:var(--teal)}
+.hype .lead{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3}
+.hype-notes{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.hype-notes li{display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;font-size:15px}
+.hype-notes b{font-variant-numeric:tabular-nums;color:var(--amber-deep)}
+
+.road{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border-top:2px solid var(--line);padding-top:0}
+.road div{position:relative;padding:20px 14px 0 0;display:grid;gap:4px;align-content:start}
+.road div::before{content:"";position:absolute;top:-8px;left:0;width:14px;height:14px;border-radius:50%;background:var(--bg);border:3px solid var(--line)}
+.road div.done::before{background:var(--amber);border-color:var(--amber)}
+.road small{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.road div.done small{color:var(--amber-deep)}
+.road b{font-size:16px}
+.road p{font-size:14px;color:var(--muted)}
+
+.risks{display:grid;gap:12px}
+.risks div{display:grid;gap:4px;padding:16px 18px;border:1px solid var(--line);border-radius:8px}
+.risks b{font-size:16px}
+.risks p{font-size:15px}
+
+/* right column */
+.side{display:grid;gap:18px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px)}
+.creator{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:10px}
+.creator .row{display:flex;gap:12px;align-items:center}
+.creator .row svg{width:42px;height:39px;flex:none}
+.creator b{display:block}
+.creator .muted{font-size:14px}
+.side h3{font-size:22px}
+.tier{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:10px;transition:border-color .2s}
+.tier:hover{border-color:var(--amber)}
+.tier .price{font:600 14px/1 var(--sans);color:var(--muted)}
+.tier .price b{font-size:26px;color:var(--ink);font-variant-numeric:tabular-nums}
+.tier h4{margin:0;font:600 18px/1.3 var(--serif)}
+.tier p{margin:0;font-size:14px}
+.tier ul{margin:0;padding-left:18px;font-size:14px;display:grid;gap:3px}
+.tier dl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;font-size:13px}
+.tier dt{color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.tier dd{margin:0;font-weight:600}
+.tier .backers{font-size:13px;color:var(--muted)}
+.tier .pick{width:100%;padding:12px}
+.tier .thanks{font-size:14px;background:var(--sunk);border-radius:6px;padding:10px 12px}
+.tier.popular{border-color:var(--amber);border-width:2px}
+.flag{justify-self:start;background:var(--honey);color:var(--on-amber);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:3px}
+
+/* lower sections */
+.band{border-top:1px solid var(--line);padding-block:56px}
+.band h2{font-size:clamp(26px,3vw,34px);margin-bottom:22px}
+.faq{display:grid;gap:10px;max-width:820px}
+.faq details{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:0 18px}
+.faq summary{cursor:pointer;font-weight:600;padding:16px 0;list-style:none;display:flex;justify-content:space-between;gap:16px}
+.faq summary::after{content:"+";font-size:22px;line-height:1;color:var(--amber-deep)}
+.faq details[open] summary::after{content:"\2212"}
+.faq details p{margin:0 0 16px;max-width:70ch}
+
+.team{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.member{display:grid;gap:10px;justify-items:center;text-align:center}
+.member .ph{width:120px;height:138px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;font:700 34px/1 var(--serif);color:var(--on-amber);background:var(--honey);overflow:hidden}
+.member .ph img{width:100%;height:100%;object-fit:cover}
+.member:nth-child(2) .ph{background:var(--teal);color:#fff}
+.member:nth-child(3) .ph{background:var(--amber)}
+.member:nth-child(4) .ph{background:var(--stage);color:var(--honey)}
+.member b{font-size:17px}
+.member span{font-size:14px;color:var(--muted)}
+.team-note{margin-top:28px;max-width:70ch}
+
+.files{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:start}
+.filelist{display:grid;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.filelist div{display:grid;grid-template-columns:44px minmax(0,1fr);gap:12px;align-items:center;padding:14px 16px;border-bottom:1px solid var(--line)}
+.filelist div:last-child{border-bottom:0}
+.ext{font:700 11px/1 var(--sans);letter-spacing:.04em;text-align:center;padding:8px 0;border-radius:4px;background:var(--sunk);color:var(--muted)}
+.filelist b{display:block;font-size:15px}
+.filelist span{font-size:13px;color:var(--muted)}
+.sources{font-size:14px;color:var(--muted);display:grid;gap:8px;padding-left:18px;margin:0}
+
+.final{background:var(--stage);color:var(--stage-ink);text-align:center}
+.final .wrap{padding-block:64px;display:grid;gap:18px;justify-items:center}
+.final h2{font-size:clamp(30px,4.5vw,46px);color:var(--stage-ink)}
+.final h2 em{font-style:normal;color:var(--honey)}
+.final svg{width:56px;height:52px}
+footer{background:var(--stage);color:#A99D8B;font-size:13px;border-top:1px solid #3A342B}
+footer .wrap{padding-block:20px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+
+/* responsive */
+@media (max-width:1080px){
+  .campaign{grid-template-columns:minmax(0,1fr) 300px;gap:32px}
+  .toc{display:none}
+}
+@media (max-width:860px){
+  .hero{grid-template-columns:minmax(0,1fr);gap:24px}
+  .campaign{grid-template-columns:minmax(0,1fr)}
+  .side{position:static}
+  .team{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .files{grid-template-columns:minmax(0,1fr)}
+  .road{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:24px}
+  .topbar .note{display:none}
+}
+@media (max-width:620px){
+  .steps,.phones,.agents,.coord,.why,.trust .wrap{grid-template-columns:minmax(0,1fr)}
+  .phones{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .phones figure:last-child{display:none}
+  .rule{grid-template-columns:minmax(0,1fr)}
+  .tabs .cta{display:none}
+  .stat b{font-size:26px}
+}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo" viewBox="0 0 100 92">
+      <polygon points="50,10 67.3,20 67.3,40 50,50 32.7,40 32.7,20" fill="#E09200"/>
+      <polygon points="31.2,42.5 48.5,52.5 48.5,72.5 31.2,82.5 13.9,72.5 13.9,52.5" fill="#F6C453"/>
+      <polygon points="68.8,42.5 86.1,52.5 86.1,72.5 68.8,82.5 51.5,72.5 51.5,52.5" fill="#2F6B6B"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top"><svg aria-hidden="true"><use href="#logo"/></svg>Colmena</a>
+    <div class="note">Crowdfunding campaign · Universidad El Bosque · 2026</div>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap head">
+    <h1>Colmena: Your AI Hive for Everyday Life</h1>
+    <p>A team of AI agents that takes care of your emails, calendar, appointments, payments, meals and home. You just say it. You approve. The hive does the rest.</p>
+  </div>
+
+  <div class="wrap hero">
+    <div>
+      <div class="media" id="media">
+        <canvas id="hexbg" aria-hidden="true"></canvas>
+        <button class="poster" id="playBtn" type="button" aria-label="Play the Colmena campaign video">
+          <span class="poster-inner">
+            <span class="logo"><svg aria-hidden="true"><use href="#logo"/></svg></span>
+            <span class="word">Colmena</span>
+            <span class="tag">Stop coordinating. Start deciding.</span>
+            <span class="play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z" fill="#1F1C17"/></svg></span>
+          </span>
+        </button>
+      </div>
+      <div class="meta-row">
+        <span class="badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l3 6.5 7 .8-5.2 4.8 1.4 7L12 17.8 5.8 21.1l1.4-7L2 9.3l7-.8z"/></svg>Winner, course innovation competition</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M11 18h2"/></svg>Apps · Artificial intelligence</span>
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 10-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>Bogotá, Colombia</span>
+      </div>
+    </div>
+
+    <aside class="fund" aria-label="Funding status">
+      <div class="bar" aria-hidden="true"><i id="barFill" style="width:70%"></i></div>
+      <div class="stat lead"><b id="pledged">$27,840</b><span>pledged of <span id="goal">$40,000</span> goal</span></div>
+      <div class="stat"><b id="backers">486</b><span>backers</span></div>
+      <div class="stat"><b id="days">18</b><span>days to go</span></div>
+      <div class="actions">
+        <a class="btn btn-primary" href="#rewards">Back this project</a>
+        <a class="btn btn-ghost" href="#files">Designs &amp; documents</a>
+      </div>
+      <p class="small"><u>All or nothing.</u> This project will only be funded if it reaches its goal. Campaign figures are illustrative for the course exercise.</p>
+    </aside>
+  </div>
+
+  <div class="trust">
+    <div class="wrap">
+      <div><svg aria-hidden="true"><use href="#logo"/></svg><span>Colmena is one assistant made of many agents. You talk to one, the Queen Bee, and she shares the work.</span></div>
+      <div><svg aria-hidden="true"><use href="#logo"/></svg><span>Nothing is sent, paid or confirmed without your approval. That rule is built into the design.</span></div>
+      <div><svg aria-hidden="true"><use href="#logo"/></svg><span>Your support funds the first working prototype and a pilot with real users.</span></div>
+    </div>
+  </div>
+
+  <nav class="tabs" aria-label="Campaign sections">
+    <div class="wrap">
+      <a href="#campaign" class="on">Campaign</a>
+      <a href="#rewards">Rewards</a>
+      <a href="#faq">FAQ</a>
+      <a href="#team">Team</a>
+      <a href="#files">Files</a>
+      <a href="#rewards" class="btn btn-primary cta">Back this project</a>
+    </div>
+  </nav>
+
+  <div class="wrap campaign" id="campaign">
+    <nav class="toc" aria-label="Story">
+      <span class="eyebrow">Story</span>
+      <a href="#s-problem">The invisible job</a>
+      <a href="#s-meet">Meet Colmena</a>
+      <a href="#s-how">How it works</a>
+      <a href="#s-agents">The agents</a>
+      <a href="#s-day">A day with Colmena</a>
+      <a href="#s-approval">You approve</a>
+      <a href="#s-why">Why it's different</a>
+      <a href="#s-tech">The technology</a>
+      <a href="#s-now">Why now</a>
+      <a href="#s-road">Where we are</a>
+      <a href="#s-risks">Risks</a>
+    </nav>
+
+    <article class="story">
+      <section id="s-problem">
+        <span class="eyebrow">The problem</span>
+        <h2>The invisible job everyone does</h2>
+        <p class="lede">Rent, the dentist, emails, groceries, the bill that's due on Friday. We carry all of it in our heads, and nobody sees that work.</p>
+        <p>Every pending task has three steps. First you have to remember it, then decide what goes first, then get it done. Today's apps only help with the last step.</p>
+        <div class="steps">
+          <div class="step us"><span class="who">Colmena</span><b>Remember</b><p>Say it the moment it comes to mind. It's saved and it won't be forgotten.</p></div>
+          <div class="step you"><span class="who">You</span><b>Decide</b><p>What matters and what goes first stays with you.</p></div>
+          <div class="step us"><span class="who">Colmena</span><b>Execute</b><p>The agents handle what each task involves, and wait for your OK.</p></div>
+        </div>
+        <p>A task often pops into our head when there's no time to write it down, and then it's gone. A calendar only works if you remember to use it.</p>
+      </section>
+
+      <section id="s-meet">
+        <span class="eyebrow">The solution</span>
+        <h2>Meet Colmena. Just say it.</h2>
+        <p>Talk to Colmena as soon as the idea comes to mind, without opening anything. Say it messy, all at once, however it comes out. Colmena saves it and takes care of everything it involves. Each agent picks up its own part.</p>
+        <div class="phones">
+          <figure><img src="{{IMG:02_phone_late_payment}}" alt="Phone lock screen with an overdue rent notification" loading="lazy"><figcaption>Before: the reminder arrives when it's already late.</figcaption></figure>
+          <figure><img src="{{IMG:03_phone_chat_queen_bee}}" alt="Chat with the Queen Bee splitting a voice note into a payment and a dentist appointment" loading="lazy"><figcaption>One voice note. The Queen Bee splits it between two agents.</figcaption></figure>
+          <figure><img src="{{IMG:05_phone_today}}" alt="Colmena morning summary with weather, meetings, rent and emails" loading="lazy"><figcaption>Your morning: what's handled, and what needs your OK.</figcaption></figure>
+        </div>
+        <blockquote class="quote">Stop coordinating. Start deciding.</blockquote>
+      </section>
+
+      <section id="s-how">
+        <span class="eyebrow">How it works</span>
+        <h2>A Queen Bee that shares the work</h2>
+        <p>You talk to one single point of contact: the Queen Bee. She understands your request, sets priorities and hands the work to specialist agents, who work at the same time.</p>
+        <img class="wide" src="{{IMG:hive}}" alt="Diagram: you speak once to the Queen Bee, who assigns work to the email, calendar, appointments, payments, meals and home agents" loading="lazy">
+      </section>
+
+      <section id="s-agents">
+        <span class="eyebrow">The hive</span>
+        <h2>One specialist for every part of your day</h2>
+        <div class="agents">
+          <div class="agent"><span class="hex queen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg></span><div><b>Queen Bee</b><span>Understands, prioritizes and assigns.</span></div></div>
+          <div class="agent"><span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><div><b>Email</b><span>Replies in your own writing style.</span></div></div>
+          <div class="agent"><span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span><div><b>Calendar</b><span>Sets up meetings with no overlaps.</span></div></div>
+          <div class="agent"><span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><b>Appointments</b><span>Medical, beauty and service bookings.</span></div></div>
+          <div class="agent"><span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></span><div><b>Payments</b><span>Reminds you and leaves them ready to pay.</span></div></div>
+          <div class="agent"><span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 11h16a8 8 0 01-16 0zM8 7c0-2 2-2 2-4M14 7c0-2 2-2 2-4"/></svg></span><div><b>Meals, groceries &amp; weather</b><span>What to cook, what to buy, what to wear.</span></div></div>
+          <div class="agent"><span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg></span><div><b>Home</b><span>Cleaning, deliveries and repairs.</span></div></div>
+          <div class="agent more"><span class="hex"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg></span><div><b>Your next agent</b><span>Add agents as your life needs them.</span></div></div>
+        </div>
+      </section>
+
+      <section id="s-day">
+        <span class="eyebrow">A day with Colmena</span>
+        <h2>You never opened an app. You just talked, and approved.</h2>
+        <div class="day">
+          <div class="t"><time>7:00 a.m.</time><div class="bubble">"It's raining today, take a jacket. You have three meetings and a payment due Friday."</div></div>
+          <div class="t"><time>11:00 a.m.</time><div class="bubble">"I answered six emails in your style. Two need your OK before they go out."</div></div>
+          <div class="t"><time>3:00 p.m.</time><div class="bubble">"Your medical check-up is booked for Thursday. Yesterday's meeting came down to five points."</div></div>
+          <div class="t"><time>8:00 p.m.</time><div class="bubble">"Tomorrow you're cooking pasta. The grocery list is ready and the cleaning is confirmed."</div></div>
+        </div>
+      </section>
+
+      <section id="s-approval">
+        <div class="rule">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+          <div>
+            <h3>Nothing is sent, paid or confirmed without you</h3>
+            <p>Colmena takes over remembering and executing. Deciding stays with you. Every email, payment and booking waits for your approval.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-why">
+        <span class="eyebrow">Why it's different</span>
+        <h2>Not one more app</h2>
+        <div class="why">
+          <div><b>Nothing to learn</b><p>You talk to it like a person you trust. No menus, no settings.</p></div>
+          <div><b>It learns from you</b><p>Over time it knows how you write, when you like to meet and what you like to eat.</p></div>
+          <div><b>It grows with you</b><p>If your life gets busier, you add more agents.</p></div>
+          <div><b>One single place</b><p>It coordinates the apps that today don't talk to each other.</p></div>
+        </div>
+        <div class="compare">
+          <table>
+            <thead><tr><th></th><th>Calendar &amp; to-do apps</th><th>Virtual assistant</th><th>Colmena</th></tr></thead>
+            <tbody>
+              <tr><td>Remembers for you</td><td>Only if you write it down</td><td>Partly</td><td class="yes">Yes, just say it</td></tr>
+              <tr><td>Executes the task</td><td>No</td><td>One agent, suggests and waits</td><td class="yes">Several agents, each with a role</td></tr>
+              <tr><td>Works on several tasks at once</td><td>No</td><td>No</td><td class="yes">Yes, in parallel</td></tr>
+              <tr><td>Asks before acting</td><td>Not applicable</td><td>Yes</td><td class="yes">Yes, every action</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="s-tech">
+        <span class="eyebrow">The technology</span>
+        <h2>Built on multi-agent systems</h2>
+        <p>A multi-agent system is made of several AI agents that work together to carry out tasks on behalf of a user or another system. Each agent keeps its autonomy but cooperates and coordinates with the others. <span class="cite">(IBM, Gutowska, 2024)</span></p>
+        <p>Each agent usually has a large language model at its core. It can break a complex task into smaller goals, use external tools and keep information in memory. <span class="cite">(Guo et al., 2024, IJCAI)</span></p>
+        <div class="coord">
+          <div><b>They communicate</b><p>Directly with each other, or through the environment they share.</p></div>
+          <div><b>They are orchestrated</b><p>An arbiter agent assigns tasks by what each one does best. In Colmena, that's the Queen Bee. <span class="cite">(AWS)</span></p></div>
+          <div><b>They specialize</b><p>Knowledge agents, decision agents and execution agents. <span class="cite">(AWS)</span></p></div>
+        </div>
+        <p><b>Where the innovation is.</b> Not in inventing each function, but in bringing them together in one multi-agent system, with a single coordinator and the user's approval on every action.</p>
+      </section>
+
+      <section id="s-now">
+        <span class="eyebrow">Why now</span>
+        <h2>Ready to build with, not yet in everyday use</h2>
+        <div class="hype" role="img" aria-label="Gartner Hype Cycle curve with three markers: multi-agent systems at the innovation trigger in 2024, AI agents at the peak in 2025, and multi-agent systems inside the peak of the 2026 Agentic AI Hype Cycle.">
+          <svg viewBox="0 0 620 300">
+            <line class="axis" x1="30" y1="250" x2="600" y2="250"/>
+            <line class="axis" x1="30" y1="20" x2="30" y2="250"/>
+            <path class="curve" d="M30,239.7 L41.2,239.2 L52.4,237.7 L63.6,234.1 L72,228.9 L80.4,220.4 L86,212.4 L91.6,202 L97.2,189.2 L102.8,173.9 L108.4,156.4 L114,137.2 L119.6,116.9 L125.2,96.6 L130.8,77.6 L136.4,61.1 L142,48.3 L147.6,40.1 L153.2,37.3 L158.8,40 L164.4,48.1 L170,60.8 L175.6,77.3 L181.2,96.2 L186.8,116.3 L192.4,136.5 L198,155.6 L203.6,173 L209.2,188.1 L214.8,200.7 L220.4,210.9 L226,218.8 L231.6,224.6 L237.2,228.8 L245.6,232.6 L254,234.4 L262.4,234.9 L273.6,234.4 L284.8,233.2 L296,231.4 L310,228.3 L324,224.4 L338,219.4 L352,213.2 L366,205.9 L380,197.6 L394,188.7 L408,179.5 L422,170.7 L436,162.6 L450,155.5 L464,149.5 L478,144.7 L492,141 L506,138.1 L520,135.9 L534,134.3 L548,133.1 L562,132.3 L576,131.6 L590,131.2"/>
+            <text x="34" y="268">Innovation trigger</text>
+            <text x="120" y="282">Peak of inflated expectations</text>
+            <text x="240" y="268">Trough of disillusionment</text>
+            <text x="370" y="282">Slope of enlightenment</text>
+            <text x="500" y="268">Plateau</text>
+            <text x="10" y="135" transform="rotate(-90 10 135)">Expectations</text>
+            <line class="lead" x1="91.6" y1="202" x2="60" y2="160"/>
+            <circle class="dot-t" cx="91.6" cy="202" r="7"/>
+            <text class="lab" x="40" y="150">2024</text>
+            <text x="40" y="138">Multi-agent systems</text>
+            <line class="lead" x1="144.8" y1="43.6" x2="96" y2="36"/>
+            <circle class="dot-t" cx="144.8" cy="43.6" r="7"/>
+            <text class="lab" x="44" y="30" text-anchor="start">2026</text>
+            <text x="44" y="18">Multi-agent systems</text>
+            <line class="lead" x1="156" y1="38" x2="200" y2="40"/>
+            <circle class="dot-a" cx="156" cy="38" r="7"/>
+            <text class="lab" x="206" y="38">2025</text>
+            <text x="206" y="52">AI agents</text>
+          </svg>
+        </div>
+        <ul class="hype-notes">
+          <li><b>2024</b><span>Gartner's Hype Cycle for Emerging Technologies places multi-agent systems at the innovation trigger, 5 to 10 years from the plateau.</span></li>
+          <li><b>2025</b><span>The name changes: "AI agents" appear at the peak of inflated expectations, with Gartner noting doubts about their accuracy.</span></li>
+          <li><b>2026</b><span>Gartner publishes a Hype Cycle just for agentic AI. Multi-agent systems are back by name, inside the peak.</span></li>
+        </ul>
+        <p class="muted">Each year uses a different category and, in 2026, a different Hype Cycle, so the markers aren't one technology moving along one curve. Our reading: the technology is rising fast, hasn't fallen into the trough and isn't mature yet. That's the moment to build Colmena.</p>
+      </section>
+
+      <section id="s-road">
+        <span class="eyebrow">Where we are</span>
+        <h2>From research to a working hive</h2>
+        <div class="road">
+          <div class="done"><small>Done</small><b>Research</b><p>Technology, Gartner Hype Cycles and related patents.</p></div>
+          <div class="done"><small>Done</small><b>Concept &amp; design</b><p>The Queen Bee model, the agents and the approval rule.</p></div>
+          <div><small>With your support</small><b>Prototype</b><p>A Queen Bee with the first agents working together.</p></div>
+          <div><small>Next</small><b>Pilot</b><p>Test Colmena with real people in their day-to-day.</p></div>
+        </div>
+      </section>
+
+      <section id="s-risks">
+        <span class="eyebrow">Risks and challenges</span>
+        <h2>What could go wrong, and how we handle it</h2>
+        <div class="risks">
+          <div><b>One agent's mistake can spread</b><p>In a multi-agent system, an error by one agent can propagate to the others (Guo et al., 2024). Colmena asks for your approval on every action, so nothing goes out on its own.</p></div>
+          <div><b>The technology is still maturing</b><p>Gartner has flagged doubts about the accuracy of AI agents. We start with everyday tasks where a person reviews the result before it counts.</p></div>
+          <div><b>Trust and privacy</b><p>Colmena handles personal information like emails, payments and appointments. Every connection to your accounts is your decision, and you can remove agents at any time.</p></div>
+        </div>
+      </section>
+    </article>
+
+    <aside class="side" id="rewards" aria-label="Rewards">
+      <div class="creator">
+        <div class="row"><svg aria-hidden="true"><use href="#logo"/></svg><div><b>Team Colmena</b><span class="muted">4 creators · Bogotá, Colombia</span></div></div>
+        <p class="muted" style="margin:0">Students at Universidad El Bosque. Colmena won our course's innovation competition.</p>
+      </div>
+      <h3>Choose your reward</h3>
+      <div id="tiers"></div>
+    </aside>
+  </div>
+
+  <section class="band" id="faq">
+    <div class="wrap">
+      <h2>Frequently asked questions</h2>
+      <div class="faq">
+        <details><summary>Will Colmena send or pay things without asking me?</summary><p>No. Nothing is sent, paid or confirmed without your approval. Colmena prepares everything, and you give the final OK.</p></details>
+        <details><summary>Do I need to learn how to use it?</summary><p>No. You talk to Colmena the way you'd talk to someone you trust. There are no menus or settings to learn.</p></details>
+        <details><summary>What is the Queen Bee?</summary><p>She is your single point of contact. She understands what you say, sets priorities and hands each part to the right specialist agent. In multi-agent terms, she's the arbiter agent.</p></details>
+        <details><summary>How is this different from a virtual assistant?</summary><p>A virtual assistant is a single agent that suggests and waits for permission. Colmena is a team of agents, each with its own role, sharing the work and running tasks at the same time.</p></details>
+        <details><summary>Can I add more agents?</summary><p>Yes. Colmena grows with you. If your life gets more complicated, you add agents for what you need.</p></details>
+        <details><summary>Does it replace my apps?</summary><p>No. It coordinates the apps you already use so they finally work together, from one single place.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="team">
+    <div class="wrap">
+      <h2>The team behind the hive</h2>
+      <div class="team" id="teamGrid"></div>
+      <p class="team-note muted">Colmena started as our project for Technology and Engineering Research at Universidad El Bosque, under Professor Edward Paul Guillen Pinto. We researched multi-agent systems, Gartner's Hype Cycles and related patents, presented the idea, and it won the course innovation competition.</p>
+    </div>
+  </section>
+
+  <section class="band" id="files">
+    <div class="wrap files">
+      <div>
+        <h2>Designs &amp; documents</h2>
+        <p style="margin:0 0 20px;max-width:60ch">Everything behind Colmena is in one shared folder: the research paper, the presentation, the designs and the video.</p>
+        <div class="filelist">
+          <div><span class="ext">PDF</span><span><b>Colmena: Multi-Agent Systems</b><span>Final research paper, APA format, 20 references</span></span></div>
+          <div><span class="ext">PDF</span><span><b>Presentation</b><span>20 slides presented in class</span></span></div>
+          <div><span class="ext">DOCX</span><span><b>Definitions</b><span>Key concepts of multi-agent systems</span></span></div>
+          <div><span class="ext">PNG</span><span><b>Designs</b><span>App screens, hive diagram, title and end cards</span></span></div>
+          <div><span class="ext">MP4</span><span><b>Campaign video</b><span>The Colmena video in English</span></span></div>
+        </div>
+        <p style="margin-top:20px"><a class="btn btn-primary" id="filesBtn" href="#files" target="_blank" rel="noopener">Open the shared folder</a></p>
+      </div>
+      <div>
+        <h3 style="font-size:20px;margin-bottom:12px">Main sources</h3>
+        <ul class="sources">
+          <li>Gutowska, A. (2024). What is a multi-agent system? IBM.</li>
+          <li>Guo, T., et al. (2024). Large language model based multi-agents: A survey of progress and challenges. IJCAI-24, 8048–8057.</li>
+          <li>Amazon Web Services. Design for composability and collaboration. AWS Prescriptive Guidance.</li>
+          <li>Hu, C., Downie, A., &amp; Finio, M. AI agents vs. AI assistants. IBM Think.</li>
+          <li>Gartner (2024, August 21). Hype Cycle for Emerging Technologies, press release.</li>
+          <li>Gartner (2025, September 10). Top emerging technologies to support autonomous business, press release.</li>
+          <li>Kandaswamy, R. (2026). What the 2026 Hype Cycle for Agentic AI reveals. Gartner.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <svg aria-hidden="true"><use href="#logo"/></svg>
+      <h2>Stop coordinating. <em>Start deciding.</em></h2>
+      <a class="btn btn-primary" href="#rewards">Join the hive</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Colmena · Technology and Engineering Research · Universidad El Bosque, Bogotá · 2026</span>
+    <span>Crowdfunding-style page made for a course exercise. No payments are processed.</span>
+  </div>
+</footer>
+
+<script>
+/* ===== EDIT HERE ===== */
+const CONFIG = {
+  videoFile: "colmena-video.mp4",   // put the final video next to index.html with this name
+  youtubeUrl: "",                   // optional: unlisted YouTube link, used if the local file is missing
+  filesUrl: "",                     // OneDrive shared-folder link
+  pledged: 27840, goal: 40000, backers: 486, daysToGo: 18,
+  team: [
+    { name: "Daniela Ocando", photo: "" },
+    { name: "Juan Fonseca", photo: "" },
+    { name: "Ricardo Cobarrubia", photo: "" },
+    { name: "Santiago Chavarro", photo: "" }
+  ],
+  tiers: [
+    { price: 1, title: "Support the hive", text: "Back Colmena because you believe in it.", items: [], delivery: "—", backers: 41 },
+    { price: 5, title: "Worker Bee", text: "Your name on our Founding Hive wall, plus campaign updates.", items: ["Name on the supporters wall", "Behind-the-scenes updates"], delivery: "Feb 2027", backers: 132 },
+    { price: 15, title: "Early Hive", text: "Be one of the first to talk to the Queen Bee.", items: ["Beta access", "Queen Bee + 3 agents for 3 months", "Everything in Worker Bee"], delivery: "Jun 2027", backers: 214, popular: true },
+    { price: 39, title: "Founding Hive", text: "A full year of Colmena with every agent.", items: ["All agents for 12 months", "Founder badge in the app", "Everything in Early Hive"], delivery: "Jun 2027", backers: 87 },
+    { price: 99, title: "Royal Hive", text: "Help us design the next agent.", items: ["Lifetime access", "A co-design session with the team", "Everything in Founding Hive"], delivery: "Jun 2027", backers: 12 }
+  ]
+};
+/* ===================== */
+
+const $ = s => document.querySelector(s);
+const money = n => "$" + n.toLocaleString("en-US");
+$("#pledged").textContent = money(CONFIG.pledged);
+$("#goal").textContent = money(CONFIG.goal);
+$("#backers").textContent = CONFIG.backers.toLocaleString("en-US");
+$("#days").textContent = CONFIG.daysToGo;
+$("#barFill").style.width = Math.min(100, CONFIG.pledged / CONFIG.goal * 100).toFixed(1) + "%";
+
+if (CONFIG.filesUrl) { $("#filesBtn").href = CONFIG.filesUrl; }
+else { const b = $("#filesBtn"); b.removeAttribute("target"); b.textContent = "Shared folder link coming soon"; b.classList.replace("btn-primary","btn-ghost"); }
+
+/* team */
+$("#teamGrid").innerHTML = CONFIG.team.map(m => {
+  const ini = m.name.split(" ").map(w => w[0]).join("");
+  const ph = m.photo ? `<img src="${m.photo}" alt="${m.name}">` : ini;
+  return `<div class="member"><div class="ph">${ph}</div><b>${m.name}</b><span>Co-founder</span></div>`;
+}).join("");
+
+/* rewards */
+$("#tiers").innerHTML = CONFIG.tiers.map((t, i) => `
+  <div class="tier${t.popular ? " popular" : ""}" style="margin-bottom:14px">
+    ${t.popular ? '<span class="flag">Most popular</span>' : ""}
+    <span class="price">Pledge <b>${money(t.price)}</b></span>
+    <h4>${t.title}</h4>
+    <p>${t.text}</p>
+    ${t.items.length ? `<ul>${t.items.map(x => `<li>${x}</li>`).join("")}</ul>` : ""}
+    <dl><div><dt>Estimated delivery</dt><dd>${t.delivery}</dd></div><div><dt>Ships to</dt><dd>Anywhere (digital)</dd></div></dl>
+    <span class="backers">${t.backers} backers</span>
+    <button class="btn btn-primary pick" type="button" id="pick-${i}" data-i="${i}">Pledge ${money(t.price)}</button>
+  </div>`).join("");
+document.querySelectorAll(".pick").forEach(b => b.addEventListener("click", () => {
+  const t = CONFIG.tiers[b.dataset.i];
+  const n = document.createElement("p");
+  n.className = "thanks";
+  n.textContent = `Thanks for choosing ${t.title}! This campaign is a course exercise, so no payment is taken.`;
+  b.replaceWith(n);
+}));
+
+/* video */
+$("#playBtn").addEventListener("click", () => {
+  const box = $("#media");
+  const showFallback = () => {
+    if (CONFIG.youtubeUrl) {
+      const id = (CONFIG.youtubeUrl.match(/(?:v=|youtu\.be\/|shorts\/)([\w-]{11})/) || [])[1];
+      box.innerHTML = (id ? `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen title="Colmena video"></iframe>` : "")
+        + `<div class="msg" style="z-index:-1"><p>Watch the video on <a href="${CONFIG.youtubeUrl}" target="_blank" rel="noopener">YouTube ↗</a></p></div>`;
+    } else {
+      box.innerHTML = `<div class="msg"><p>The Colmena video premieres November 19, 2026.</p></div>`;
+    }
+  };
+  const v = document.createElement("video");
+  v.controls = true; v.autoplay = true; v.playsInline = true; v.src = CONFIG.videoFile;
+  v.addEventListener("error", showFallback, { once: true });
+  box.innerHTML = ""; box.appendChild(v);
+});
+
+/* honeycomb background on the video poster */
+(function(){
+  const c = $("#hexbg"); if (!c) return;
+  const ctx = c.getContext("2d");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let w, h, cells = [], t0 = performance.now();
+  function size(){
+    const r = c.getBoundingClientRect(), d = Math.min(2, devicePixelRatio || 1);
+    w = r.width; h = r.height; c.width = w * d; c.height = h * d; ctx.setTransform(d,0,0,d,0,0);
+    cells = []; const s = Math.max(22, w / 26), hw = s * Math.sqrt(3);
+    for (let y = -s, row = 0; y < h + s; y += s * 1.5, row++)
+      for (let x = (row % 2 ? hw / 2 : 0) - hw; x < w + hw; x += hw) cells.push({x, y, s, p: Math.random() * 6.28});
+  }
+  function hex(x, y, s){ ctx.beginPath(); for (let i = 0; i < 6; i++){ const a = Math.PI/3*i + Math.PI/6; ctx.lineTo(x + s*.92*Math.cos(a), y + s*.92*Math.sin(a)); } ctx.closePath(); }
+  function draw(now){
+    const t = (now - t0) / 1000; ctx.clearRect(0,0,w,h);
+    const cx = w/2, cy = h/2;
+    for (const k of cells){
+      const dist = Math.hypot(k.x - cx, k.y - cy) / Math.hypot(cx, cy);
+      const glow = (Math.sin(t*0.8 + k.p) + 1) / 2;
+      hex(k.x, k.y, k.s);
+      ctx.strokeStyle = `rgba(246,196,83,${0.05 + 0.08*(1-dist)})`; ctx.lineWidth = 1; ctx.stroke();
+      if (glow > 0.93 && dist > .35){ ctx.fillStyle = `rgba(47,107,107,${(glow-.93)*4})`; ctx.fill(); }
+    }
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w,h)*.55);
+    g.addColorStop(0, "rgba(31,28,23,.85)"); g.addColorStop(1, "rgba(31,28,23,0)");
+    ctx.fillStyle = g; ctx.fillRect(0,0,w,h);
+    if (!reduce && document.contains(c)) requestAnimationFrame(draw);
+  }
+  size(); addEventListener("resize", size); requestAnimationFrame(draw);
+})();
+
+/* active tab + story index */
+(function(){
+  const map = [...document.querySelectorAll(".toc a")].map(a => [a, document.querySelector(a.getAttribute("href"))]);
+  const tabs = [...document.querySelectorAll(".tabs a:not(.cta)")];
+  function onScroll(){
+    const y = innerHeight * 0.3;
+    let cur = null; for (const [a, s] of map) if (s && s.getBoundingClientRect().top < y) cur = a;
+    map.forEach(([a]) => a.classList.toggle("on", a === cur));
+    let tab = tabs[0];
+    for (const a of tabs){ const s = document.querySelector(a.getAttribute("href")); if (s && s.getBoundingClientRect().top < 120 && a.getAttribute("href") !== "#rewards") tab = a; }
+    tabs.forEach(a => a.classList.toggle("on", a === tab));
+  }
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
+})();
+</script>
